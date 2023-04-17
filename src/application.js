@@ -1,7 +1,7 @@
 import onChange from 'on-change';
 import * as yup from 'yup';
 
-import validRender from './render';
+import render from './render';
 
 const validateUrl = (url, savedFeeds) => {
     const schema = yup.string().url().notOneOf(savedFeeds);
@@ -9,45 +9,45 @@ const validateUrl = (url, savedFeeds) => {
 };
 
 const elements = {
-    form: document.querySelector('form'),
-    input: document.querySelector('input'),
+    form: document.querySelector('.rss-form'),
+    input: document.querySelector('#url-input'),
     submitButton: document.querySelector('button[type="submit"]'),
+    feedback: document.querySelector('.feedback'),
 };
 
 export default () => {
     const initialState = {
-        status: 'waiting',
-        form: {
-            valid: false,
-            errors: [],
-        },
+        formStatus: 'waiting',
+        posts: [],
+        feeds: [],
+        errors: [],
+
         sateteUi: {
 
         },
-        posts: [],
-        feeds: [],
     }
 
-    const watchedSate = onChange(initialState, (path, value) => {
-        switch(path) {
-            case 'form.valid': {
-                validRender(elements, initialState, value)
-            }
-        }
-    });
+    const watchedSate = onChange(initialState, render(initialState, elements));
 
     console.log(elements.form, elements.input, elements.submitButton);
     console.log('hi')
 
     elements.form.addEventListener('submit', (e) => {
         e.preventDefault();
-        watchedSate.status = 'loading';
+        watchedSate.formStatus = 'loading';
         const formData = new FormData(e.target);
-        const url = formData.get('url');
+        const inputUrl = formData.get('url');
         const savedFeeds = initialState.feeds.map((feed) => feed);
-        validateUrl(url, savedFeeds)
-        .then((url) => initialState.feeds.push(url))
-        .then(() => console.log(initialState.feeds))
-        watchedSate.form.valid = true;
-    })
+        validateUrl(inputUrl, savedFeeds)
+            .then((url) => {
+                initialState.feeds.push(url);
+                console.log(initialState.feeds);
+                watchedSate.formStatus = 'sending';
+            })
+            .catch((error) => {
+                watchedSate.formStatus = 'invalid';
+                watchedSate.errors.push(error);
+            });
+        console.log(initialState, 'state!!!');
+    });
 };
