@@ -3,7 +3,7 @@ export default {
     translation: {
         status: {
             sending: 'RSS загружается',
-            success: 'RSS успешно загружен',
+            added: 'RSS успешно загружен',
         },
         items: {
             feeds: 'Фиды',
