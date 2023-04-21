@@ -20,6 +20,13 @@ const makeRequest = (url) => {
     return axios.get(proxyUrl);
 };
 
+const addId = (posts, feedId) => {
+    posts.forEach((post) => {
+        post.feedId = feedId;
+        post.id = _.uniqueId();
+    });
+};
+
 export default () => {
     yup.setLocale({
         mixed: {
@@ -79,11 +86,14 @@ export default () => {
                         const responseData = response.data.contents;
                         console.log('responseData', responseData);
                         console.log(response, 'response$$$');
-                        const { feed } = parser(responseData);
+                        const { feed, posts } = parser(responseData);
                         feed.url = inputUrl;
                         feed.id = _.uniqueId();
+                        addId(posts, feed.id);
                         console.log(feed, 'feed');
+                        console.log(posts, 'posts');
                         watchedState.feeds = [feed, ...initialState.feeds];
+                        watchedState.posts = [...posts, ...initialState.posts];
                         watchedState.formStatus = 'added';
                     })
                     .catch((error) => {

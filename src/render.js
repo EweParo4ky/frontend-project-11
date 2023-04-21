@@ -1,4 +1,5 @@
 import i18next from "i18next";
+import { forEach } from "lodash";
 
 const invalidRender = (elements) => {
     elements.input.classList.add('is-invalid');
@@ -94,6 +95,45 @@ const renderFeeds = (state, elements, i18next) => {
     elements.feeds.append(wrapper);
 };
 
+const renderPosts = (state, elements, i18next) => {
+    const list = document.createElement('ul');
+    list.classList.add('list-group', 'border-0', 'rounded-0');
+
+    const posts = state.posts.map((post) => {
+        const liEl = document.createElement('li');
+        liEl.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
+
+        const aEl = document.createElement('a');
+        aEl.classList.add('fw-bold');
+        aEl.setAttribute('href', post.link);
+        aEl.setAttribute('data-id', post.id);
+        aEl.setAttribute('target', '_blank');
+        aEl.setAttribute('rel', 'noopener noreferrer');
+        aEl.textContent = post.title;
+
+        liEl.append(aEl);
+
+        const btnEl = document.createElement('button');
+        btnEl.setAttribute('type', 'button');
+        btnEl.setAttribute('data-id', post.id);
+        btnEl.setAttribute('data-bs-toggle', 'modal');
+        btnEl.setAttribute('data-bs-target', '#modal');
+        btnEl.classList.add('btn', 'btn-outline-primary', 'btn-sm');
+        btnEl.textContent = i18next.t('items.btn');
+
+        liEl.append(btnEl);
+
+        return liEl;
+    });
+    posts.forEach((post) => {
+        list.append(post);
+    });
+
+    const wrapper = makeWrapper('posts', i18next);
+    wrapper.append(list);
+    elements.posts.append(wrapper);
+};
+
 const render = (state, elements, i18next) => (path, value) => {
     switch (path) {
         case 'formStatus':
@@ -102,12 +142,14 @@ const render = (state, elements, i18next) => (path, value) => {
         case 'feeds':
             renderFeeds(state, elements, i18next);
             break;
+        case 'posts':
+            renderPosts(state, elements, i18next);
         case 'errors':
             renderErrors(elements, value, i18next);
             break;
         default:
             break;
-    }
-}
+    };
+};
 
 export default render;
