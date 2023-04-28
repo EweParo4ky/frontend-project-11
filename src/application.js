@@ -43,9 +43,9 @@ export default () => {
         posts: [],
         feeds: [],
         errors: [],
-
-        sateteUi: {
-
+        stateUi: {
+            viewedPosts: new Set(),
+            postIdModal: null,
         },
     };
 
@@ -56,6 +56,11 @@ export default () => {
         feedback: document.querySelector('.feedback'),
         posts: document.querySelector('.posts'),
         feeds: document.querySelector('.feeds'),
+        modal: {
+            title: document.querySelector('.modal-title'),
+            body: document.querySelector('.modal-body'),
+            link: document.querySelector('.full-article')
+        },
     };
 
     const i18nextInstance = i18next.createInstance();
@@ -102,6 +107,13 @@ export default () => {
                     });
                 console.log(initialState, 'state!!!');
             });
-        })
-
+            elements.posts.addEventListener('click', (e) => {
+                const currentPostId = e.target.dataset.id;
+                if (currentPostId) {
+                    watchedState.stateUi.viewedPosts.add(currentPostId);
+                    watchedState.stateUi.postIdModal = currentPostId;
+                }
+                console.log(watchedState.stateUi, 'watchedState@@@@@@@@@@@@');
+            });
+        });
 };

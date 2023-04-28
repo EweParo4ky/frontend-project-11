@@ -134,6 +134,22 @@ const renderPosts = (state, elements, i18next) => {
     elements.posts.append(wrapper);
 };
 
+const renderViewedPost = (viewedPosts) => {
+    const postIds = [...viewedPosts];
+    const currentId = postIds[postIds.length - 1];
+    const currentPost = document.querySelector(`[data-id="${currentId}"]`);
+    currentPost.classList.remove('fw-bold');
+    currentPost.classList.add('fw-normal', 'link-secondary');
+};
+
+const renderModal = (state, elements, postId) => {
+    const postInModal = state.posts.filter((post) => post.id === postId);
+    const [{ description, link, title }] = postInModal;
+    elements.modal.title.textContent = title;
+    elements.modal.body.textContent = description;
+    elements.modal.link.setAttribute('href', link);
+};
+
 const render = (state, elements, i18next) => (path, value) => {
     switch (path) {
         case 'formStatus':
@@ -144,6 +160,13 @@ const render = (state, elements, i18next) => (path, value) => {
             break;
         case 'posts':
             renderPosts(state, elements, i18next);
+            break;
+        case 'stateUi.viewedPosts':
+            renderViewedPost(value);
+            break;
+        case 'stateUi.postIdModal':
+            renderModal(state, elements, value);
+            break;
         case 'errors':
             renderErrors(elements, value, i18next);
             break;
