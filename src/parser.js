@@ -26,9 +26,9 @@ export default (responseData) => {
   const parsedData = parser.parseFromString(responseData, 'application/xml');
   const parseError = parsedData.querySelector('parsererror');
   if (parseError) {
-    throw new Error('notContainRSS');
+    throw new Error(parseError.textContent);
   }
   const feed = getFeed(parsedData);
   const posts = getPosts(parsedData);
   return { feed, posts };
-}
+};
