@@ -36,7 +36,6 @@ const updatePosts = (watchedState) => {
     const newPosts = posts.filter((post) => !displayedPostLinks.includes(post.link));
     addId(newPosts, feed.id);
     watchedState.posts.unshift(...newPosts);
-    console.log('update!!!');
   }));
   return Promise.all(promises)
     .then(() => setTimeout(() => updatePosts(watchedState), 5000));
@@ -96,22 +95,16 @@ const application = () => {
         const savedFeeds = initialState.feeds.map((feed) => feed.url);
         validateUrl(inputUrl, savedFeeds)
           .then((url) => {
-            console.log(initialState.feeds);
             watchedState.formStatus = 'sending';
             watchedState.errors = null;
-            console.log(makeRequest(url));
             return makeRequest(url);
           })
           .then((response) => {
             const responseData = response.data.contents;
-            console.log('responseData', responseData);
-            console.log(response, 'response$$$');
             const { feed, posts } = parser(responseData);
             feed.link = inputUrl;
             feed.id = _.uniqueId();
             addId(posts, feed.id);
-            console.log(feed, 'feed');
-            console.log(posts, 'posts');
             watchedState.feeds = [feed, ...initialState.feeds];
             watchedState.posts = [...posts, ...initialState.posts];
             watchedState.formStatus = 'added';
@@ -120,7 +113,6 @@ const application = () => {
             watchedState.formStatus = 'invalid';
             watchedState.errors = error.isAxiosError ? 'networkError' : error.message;
           });
-        console.log(initialState, 'state!!!');
       });
 
       elements.posts.addEventListener('click', (e) => {
@@ -129,11 +121,9 @@ const application = () => {
           watchedState.stateUi.viewedPosts.add(currentPostId);
           watchedState.stateUi.postIdModal = currentPostId;
         }
-        console.log(watchedState.stateUi, 'watchedState@@@@@@@@@@@@');
       });
 
       updatePosts(watchedState);
-      console.log('updatePosts', updatePosts(watchedState));
     });
 };
 export default application;
