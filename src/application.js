@@ -92,7 +92,7 @@ const application = () => {
         watchedState.formStatus = 'loading';
         const formData = new FormData(e.target);
         const inputUrl = formData.get('url');
-        const savedFeeds = initialState.feeds.map((feed) => feed.url);
+        const savedFeeds = initialState.feeds.map((feed) => feed.link);
         validateUrl(inputUrl, savedFeeds)
           .then((url) => {
             watchedState.formStatus = 'sending';
