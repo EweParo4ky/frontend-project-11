@@ -1,4 +1,5 @@
 const invalidRender = (elements) => {
+  elements.submitButton.removeAttribute('disabled');
   elements.input.classList.add('is-invalid');
   elements.feedback.classList.remove('text-success');
   elements.feedback.classList.remove('text-warning');
@@ -6,6 +7,7 @@ const invalidRender = (elements) => {
 };
 
 const renderSending = (elements, i18next) => {
+  elements.submitButton.setAttribute('disabled', true);
   elements.input.classList.remove('is-invalid');
   elements.feedback.classList.remove('text-danger');
   elements.feedback.classList.remove('text-success');
@@ -14,6 +16,7 @@ const renderSending = (elements, i18next) => {
 };
 
 const renderAdded = (elements, i18next) => {
+  elements.submitButton.removeAttribute('disabled');
   elements.input.classList.remove('is-invalid');
   elements.feedback.classList.remove('text-danger');
   elements.feedback.classList.remove('text-warning');

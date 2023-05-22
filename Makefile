@@ -10,5 +10,3 @@ build:
 
 lint:
 	npx eslint .
-
-.PHONY: test

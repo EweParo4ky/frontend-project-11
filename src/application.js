@@ -5,7 +5,7 @@ import axios from 'axios';
 import i18next from 'i18next';
 
 import render from './render.js';
-import resources from './locales/ru.js';
+import resources from './locales/index.js';
 import parser from './parser.js';
 
 const validateUrl = (url, savedFeeds) => {

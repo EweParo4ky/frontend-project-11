@@ -1,4 +1,4 @@
-name: test CI
+name: lint CI
 
 on:
   - push
