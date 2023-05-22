@@ -17,14 +17,16 @@ const makeRequest = (url) => {
   const proxyUrl = new URL('/get', 'https://allorigins.hexlet.app');
   proxyUrl.searchParams.set('url', url);
   proxyUrl.searchParams.set('disableCache', 'true');
-  return axios.get(proxyUrl);
+  return axios.get(proxyUrl.toString());
 };
 
 const addId = (posts, feedId) => {
-  posts.forEach((post) => {
+  const postsWithID = posts.map((post) => {
     post.feedId = feedId;
     post.id = _.uniqueId();
+    return post;
   });
+  return postsWithID;
 };
 
 const updatePosts = (watchedState) => {
@@ -34,8 +36,8 @@ const updatePosts = (watchedState) => {
     const postsWithCurrentId = savedPosts.filter((post) => post.feedId === feed.id);
     const displayedPostLinks = postsWithCurrentId.map((post) => post.link);
     const newPosts = posts.filter((post) => !displayedPostLinks.includes(post.link));
-    addId(newPosts, feed.id);
-    watchedState.posts.unshift(...newPosts);
+    const newPostsWithID = addId(newPosts, feed.id);
+    watchedState.posts.unshift(...newPostsWithID);
   }));
   return Promise.all(promises)
     .then(() => setTimeout(() => updatePosts(watchedState), 5000));
@@ -53,6 +55,7 @@ const application = () => {
   });
 
   const initialState = {
+    process: 'filling',
     formStatus: 'waiting',
     posts: [],
     feeds: [],
@@ -89,12 +92,12 @@ const application = () => {
 
       elements.form.addEventListener('submit', (e) => {
         e.preventDefault();
-        watchedState.formStatus = 'loading';
         const formData = new FormData(e.target);
         const inputUrl = formData.get('url');
         const savedFeeds = initialState.feeds.map((feed) => feed.link);
         validateUrl(inputUrl, savedFeeds)
           .then((url) => {
+            watchedState.process = 'loading';
             watchedState.formStatus = 'sending';
             watchedState.errors = null;
             return makeRequest(url);
@@ -104,12 +107,14 @@ const application = () => {
             const { feed, posts } = parser(responseData);
             feed.link = inputUrl;
             feed.id = _.uniqueId();
-            addId(posts, feed.id);
+            const postsWithId = addId(posts, feed.id);
             watchedState.feeds = [feed, ...initialState.feeds];
-            watchedState.posts = [...posts, ...initialState.posts];
+            watchedState.posts = [...postsWithId, ...initialState.posts];
+            watchedState.process = 'loaded';
             watchedState.formStatus = 'added';
           })
           .catch((error) => {
+            watchedState.process = 'failed';
             watchedState.formStatus = 'invalid';
             watchedState.errors = error.isAxiosError ? 'networkError' : error.message;
           });
