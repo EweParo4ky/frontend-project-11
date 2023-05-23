@@ -29,6 +29,16 @@ const addId = (posts, feedId) => {
   return postsWithID;
 };
 
+const handleError = (error) => {
+  if (error.isParserError) {
+    return 'notContainRSS';
+  }
+  if (axios.isAxiosError(error)) {
+    return 'networkError';
+  }
+  return error.message;
+};
+
 const updatePosts = (watchedState) => {
   const promises = watchedState.feeds.map((feed) => makeRequest(feed.link).then((response) => {
     const { posts } = parser(response.data.contents);
@@ -116,7 +126,7 @@ const application = () => {
           .catch((error) => {
             watchedState.process = 'failed';
             watchedState.formStatus = 'invalid';
-            watchedState.errors = error.isAxiosError ? 'networkError' : error.message;
+            watchedState.errors = handleError(error);
           });
       });
 
