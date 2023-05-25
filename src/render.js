@@ -1,13 +1,32 @@
-const invalidRender = (elements) => {
+const renderForm = (elements, value) => {
+  switch (value) {
+    case 'invalid':
+      elements.submitButton.removeAttribute('disabled');
+      elements.input.removeAttribute('disabled');
+      elements.input.classList.add('is-invalid');
+      elements.feedback.classList.remove('text-success');
+      elements.feedback.classList.remove('text-warning');
+      elements.feedback.classList.add('text-danger');
+      break;
+    case 'filling':
+      elements.feedback.classList.remove('text-danger');
+      elements.feedback.classList.remove('text-warning');
+      elements.feedback.classList.add('text-success');
+      break;
+    default:
+      break;
+  }
+};
+
+const renderWaiting = (elements) => {
   elements.submitButton.removeAttribute('disabled');
-  elements.input.classList.add('is-invalid');
-  elements.feedback.classList.remove('text-success');
-  elements.feedback.classList.remove('text-warning');
-  elements.feedback.classList.add('text-danger');
+  elements.input.removeAttribute('disabled');
+  elements.input.classList.remove('is-invalid');
 };
 
 const renderSending = (elements, i18next) => {
   elements.submitButton.setAttribute('disabled', true);
+  elements.input.setAttribute('disabled', true);
   elements.input.classList.remove('is-invalid');
   elements.feedback.classList.remove('text-danger');
   elements.feedback.classList.remove('text-success');
@@ -15,15 +34,23 @@ const renderSending = (elements, i18next) => {
   elements.feedback.textContent = i18next.t('status.sending');
 };
 
-const renderAdded = (elements, i18next) => {
+const renderLoaded = (elements, i18next) => {
   elements.submitButton.removeAttribute('disabled');
+  elements.input.removeAttribute('disabled');
   elements.input.classList.remove('is-invalid');
   elements.feedback.classList.remove('text-danger');
   elements.feedback.classList.remove('text-warning');
   elements.feedback.classList.add('text-success');
-  elements.feedback.textContent = i18next.t('status.added');
+  elements.feedback.textContent = i18next.t('status.loaded');
   elements.form.reset();
   elements.input.focus();
+};
+
+const renderFailed = (elements) => {
+  elements.submitButton.removeAttribute('disabled');
+  elements.input.removeAttribute('disabled');
+  elements.feedback.classList.remove('text-warning');
+  elements.feedback.classList.add('text-danger');
 };
 
 const renderErrors = (elements, value, i18next) => {
@@ -34,16 +61,19 @@ const renderErrors = (elements, value, i18next) => {
   elements.feedback.textContent = i18next.t(`errors.${errorText}`);
 };
 
-const renderFormState = (elements, value, i18next) => {
+const renderRequest = (elements, value, i18next) => {
   switch (value) {
-    case 'invalid':
-      invalidRender(elements);
+    case 'waiting':
+      renderWaiting(elements);
       break;
     case 'sending':
       renderSending(elements, i18next);
       break;
-    case 'added':
-      renderAdded(elements, i18next);
+    case 'loaded':
+      renderLoaded(elements, i18next);
+      break;
+    case 'failed':
+      renderFailed(elements);
       break;
     default:
       break;
@@ -136,9 +166,10 @@ const renderPosts = (state, elements, i18next) => {
   elements.posts.append(wrapper);
 };
 
-const renderViewedPost = (viewedPosts) => {
-  const postIds = [...viewedPosts];
-  const currentId = postIds[postIds.length - 1];
+const renderViewedPosts = (viewedPostIds) => {
+  console.log('viewedPosts', viewedPostIds);
+  const postIds = [...viewedPostIds];
+  const currentId = postIds.at(-1);
   const currentPost = document.querySelector(`[data-id="${currentId}"]`);
   currentPost.classList.remove('fw-bold');
   currentPost.classList.add('fw-normal', 'link-secondary');
@@ -155,7 +186,10 @@ const renderModal = (state, elements, postId) => {
 const render = (state, elements, i18next) => (path, value) => {
   switch (path) {
     case 'formStatus':
-      renderFormState(elements, value, i18next);
+      renderForm(elements, value);
+      break;
+    case 'requestStatus':
+      renderRequest(elements, value, i18next);
       break;
     case 'feeds':
       renderFeeds(state, elements, i18next);
@@ -164,7 +198,7 @@ const render = (state, elements, i18next) => (path, value) => {
       renderPosts(state, elements, i18next);
       break;
     case 'stateUi.viewedPosts':
-      renderViewedPost(value);
+      renderViewedPosts(value);
       break;
     case 'stateUi.postIdModal':
       renderModal(state, elements, value);

@@ -6,8 +6,8 @@ const getFeed = (parsedData) => {
 
 const getPosts = (parsedData) => {
   const items = parsedData.querySelectorAll('item');
-  const posts = [];
-  items.forEach((item) => {
+  const arrayOfItems = Array.from(items);
+  const posts = arrayOfItems.map((item) => {
     const title = item.querySelector('title').textContent;
     const link = item.querySelector('link').textContent;
     const description = item.querySelector('description').textContent;
@@ -16,7 +16,7 @@ const getPosts = (parsedData) => {
       link,
       description,
     };
-    posts.push(parsedItem);
+    return parsedItem;
   });
   return posts;
 };

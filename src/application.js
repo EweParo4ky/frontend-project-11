@@ -8,8 +8,8 @@ import render from './render.js';
 import resources from './locales/index.js';
 import parser from './parser.js';
 
-const validateUrl = (url, savedFeeds) => {
-  const schema = yup.string().url().notOneOf(savedFeeds);
+const validateUrl = (url, linksList) => {
+  const schema = yup.string().url().notOneOf(linksList);
   return schema.validate(url);
 };
 
@@ -40,16 +40,18 @@ const handleError = (error) => {
 };
 
 const updatePosts = (watchedState) => {
-  const promises = watchedState.feeds.map((feed) => makeRequest(feed.link).then((response) => {
-    const { posts } = parser(response.data.contents);
-    const savedPosts = watchedState.posts;
-    const postsWithCurrentId = savedPosts.filter((post) => post.feedId === feed.id);
-    const displayedPostLinks = postsWithCurrentId.map((post) => post.link);
-    const newPosts = posts.filter((post) => !displayedPostLinks.includes(post.link));
-    const newPostsWithID = addId(newPosts, feed.id);
-    watchedState.posts.unshift(...newPostsWithID);
-  }));
-  return Promise.all(promises)
+  const promises = watchedState.feeds.map((feed) => makeRequest(feed.link)
+    .then((response) => {
+      const { posts } = parser(response.data.contents);
+      const savedPosts = watchedState.posts;
+      const postsWithCurrentId = savedPosts.filter((post) => post.feedId === feed.id);
+      const displayedPostLinks = postsWithCurrentId.map((post) => post.link);
+      const newPosts = posts.filter((post) => !displayedPostLinks.includes(post.link));
+      const newPostsWithID = addId(newPosts, feed.id);
+      watchedState.posts.unshift(...newPostsWithID);
+    })
+    .catch((err) => console.log(`Error: ${err}`)));
+  Promise.all(promises)
     .then(() => setTimeout(() => updatePosts(watchedState), 5000));
 };
 
@@ -65,8 +67,8 @@ const application = () => {
   });
 
   const initialState = {
-    process: 'filling',
-    formStatus: 'waiting',
+    requestStatus: 'waiting',
+    formStatus: 'filling',
     posts: [],
     feeds: [],
     errors: [],
@@ -104,11 +106,10 @@ const application = () => {
         e.preventDefault();
         const formData = new FormData(e.target);
         const inputUrl = formData.get('url');
-        const savedFeeds = initialState.feeds.map((feed) => feed.link);
-        validateUrl(inputUrl, savedFeeds)
+        const linksList = initialState.feeds.map((feed) => feed.link);
+        validateUrl(inputUrl, linksList)
           .then((url) => {
-            watchedState.process = 'loading';
-            watchedState.formStatus = 'sending';
+            watchedState.requestStatus = 'sending';
             watchedState.errors = null;
             return makeRequest(url);
           })
@@ -120,11 +121,11 @@ const application = () => {
             const postsWithId = addId(posts, feed.id);
             watchedState.feeds = [feed, ...initialState.feeds];
             watchedState.posts = [...postsWithId, ...initialState.posts];
-            watchedState.process = 'loaded';
-            watchedState.formStatus = 'added';
+            watchedState.requestStatus = 'loaded';
+            watchedState.formStatus = 'filling';
           })
           .catch((error) => {
-            watchedState.process = 'failed';
+            watchedState.requestStatus = 'failed';
             watchedState.formStatus = 'invalid';
             watchedState.errors = handleError(error);
           });
