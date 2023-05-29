@@ -136,7 +136,11 @@ const renderPosts = (state, elements, i18next) => {
     liEl.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
 
     const aEl = document.createElement('a');
-    aEl.classList.add('fw-bold');
+    if (state.stateUi.viewedPosts.has(post.id)) {
+      aEl.classList.add('fw-normal', 'link-secondary');
+    } else {
+      aEl.classList.add('fw-bold');
+    }
     aEl.setAttribute('href', post.link);
     aEl.setAttribute('data-id', post.id);
     aEl.setAttribute('target', '_blank');
@@ -167,7 +171,6 @@ const renderPosts = (state, elements, i18next) => {
 };
 
 const renderViewedPosts = (viewedPostIds) => {
-  console.log('viewedPosts', viewedPostIds);
   const postIds = [...viewedPostIds];
   const currentId = postIds.at(-1);
   const currentPost = document.querySelector(`[data-id="${currentId}"]`);
