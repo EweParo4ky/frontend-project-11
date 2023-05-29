@@ -13,18 +13,23 @@ const validateUrl = (url, linksList) => {
   return schema.validate(url);
 };
 
-const makeRequest = (url) => {
+const addProxy = (url) => {
   const proxyUrl = new URL('/get', 'https://allorigins.hexlet.app');
   proxyUrl.searchParams.set('url', url);
   proxyUrl.searchParams.set('disableCache', 'true');
-  return axios.get(proxyUrl.toString());
+  return proxyUrl.toString();
 };
+
+const makeRequest = (proxyUrl) => axios.get(proxyUrl);
 
 const addId = (posts, feedId) => {
   const postsWithID = posts.map((post) => {
-    post.feedId = feedId;
-    post.id = _.uniqueId();
-    return post;
+    const item = {
+      ...post,
+      id: _.uniqueId(),
+      feedId,
+    };
+    return item;
   });
   return postsWithID;
 };
@@ -40,19 +45,23 @@ const handleError = (error) => {
 };
 
 const updatePosts = (watchedState) => {
-  const promises = watchedState.feeds.map((feed) => makeRequest(feed.link)
-    .then((response) => {
-      const { posts } = parser(response.data.contents);
-      const savedPosts = watchedState.posts;
-      const postsWithCurrentId = savedPosts.filter((post) => post.feedId === feed.id);
-      const displayedPostLinks = postsWithCurrentId.map((post) => post.link);
-      const newPosts = posts.filter((post) => !displayedPostLinks.includes(post.link));
-      const newPostsWithID = addId(newPosts, feed.id);
-      watchedState.posts.unshift(...newPostsWithID);
-    })
-    .catch((err) => console.log(`Error: ${err}`)));
+  const timeoutUpdate = 5000;
+  const promises = watchedState.feeds.map((feed) => {
+    const proxyUrl = addProxy(feed.link);
+    return makeRequest(proxyUrl)
+      .then((response) => {
+        const { posts } = parser(response.data.contents);
+        const savedPosts = watchedState.posts;
+        const postsWithCurrentId = savedPosts.filter((post) => post.feedId === feed.id);
+        const displayedPostLinks = postsWithCurrentId.map((post) => post.link);
+        const newPosts = posts.filter((post) => !displayedPostLinks.includes(post.link));
+        const newPostsWithID = addId(newPosts, feed.id);
+        watchedState.posts.unshift(...newPostsWithID);
+      })
+      .catch((err) => console.error(`Error: ${err}`));
+  });
   Promise.all(promises)
-    .then(() => setTimeout(() => updatePosts(watchedState), 5000));
+    .then(() => setTimeout(() => updatePosts(watchedState), timeoutUpdate));
 };
 
 const application = () => {
@@ -104,14 +113,17 @@ const application = () => {
 
       elements.form.addEventListener('submit', (e) => {
         e.preventDefault();
+
         const formData = new FormData(e.target);
         const inputUrl = formData.get('url');
         const linksList = initialState.feeds.map((feed) => feed.link);
+        watchedState.requestStatus = 'sending';
+
         validateUrl(inputUrl, linksList)
           .then((url) => {
-            watchedState.requestStatus = 'sending';
             watchedState.errors = null;
-            return makeRequest(url);
+            const proxyUrl = addProxy(url);
+            return makeRequest(proxyUrl);
           })
           .then((response) => {
             const responseData = response.data.contents;
