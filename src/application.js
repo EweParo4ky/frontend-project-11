@@ -116,7 +116,7 @@ const application = () => {
         e.preventDefault();
 
         const formData = new FormData(e.target);
-        const inputUrl = formData.get('url');
+        const inputUrl = formData.get('url').trim();
         const linksList = initialState.feeds.map((feed) => feed.link);
         watchedState.requestStatus = 'sending';
 
@@ -136,15 +136,14 @@ const application = () => {
             watchedState.posts = [...postsWithId, ...initialState.posts];
             watchedState.requestStatus = 'loaded';
             watchedState.formStatus = 'filling';
-            elements.removeButton = document.querySelector('.rm-btn');
-            elements.removeButton.addEventListener('click', (event) => {
-              // console.log('Boom!');
-              const currentFeedId = event.target.dataset.id;
-              // console.log('data-id feed', currentFeedId, typeof currentFeedId);
-              // console.log(watchedState.feeds);
-              const removedFeeds = watchedState.feeds.filter((el) => el.id !== currentFeedId);
-              // console.log('filtered', removedFeeds);
-              watchedState.feeds = removedFeeds;
+
+            elements.removeButtons = document.querySelectorAll('.rm-btn');
+            elements.removeButtons.forEach((btn) => {
+              btn.addEventListener('click', (event) => {
+                console.log('Boom!');
+                const currentFeedId = event.target.dataset.id;
+                console.log('currentFeedId', currentFeedId);
+              });
             });
           })
           .catch((error) => {
