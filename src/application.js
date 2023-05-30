@@ -91,6 +91,7 @@ const application = () => {
     form: document.querySelector('.rss-form'),
     input: document.querySelector('#url-input'),
     submitButton: document.querySelector('button[type="submit"]'),
+    removeButton: '',
     feedback: document.querySelector('.feedback'),
     posts: document.querySelector('.posts'),
     feeds: document.querySelector('.feeds'),
@@ -135,6 +136,16 @@ const application = () => {
             watchedState.posts = [...postsWithId, ...initialState.posts];
             watchedState.requestStatus = 'loaded';
             watchedState.formStatus = 'filling';
+            elements.removeButton = document.querySelector('.rm-btn');
+            elements.removeButton.addEventListener('click', (event) => {
+              // console.log('Boom!');
+              const currentFeedId = event.target.dataset.id;
+              // console.log('data-id feed', currentFeedId, typeof currentFeedId);
+              // console.log(watchedState.feeds);
+              const removedFeeds = watchedState.feeds.filter((el) => el.id !== currentFeedId);
+              // console.log('filtered', removedFeeds);
+              watchedState.feeds = removedFeeds;
+            });
           })
           .catch((error) => {
             watchedState.requestStatus = 'failed';
@@ -150,7 +161,6 @@ const application = () => {
           watchedState.stateUi.postIdModal = currentPostId;
         }
       });
-
       updatePosts(watchedState);
     });
 };

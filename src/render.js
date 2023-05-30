@@ -102,14 +102,15 @@ const renderFeeds = (state, elements, i18next) => {
   const list = document.createElement('ul');
   list.classList.add('list-group', 'border-0', 'rounded-0');
 
-  const feeds = state.feeds.map(({ feedTitle, feedDescription }) => {
+  const feeds = state.feeds.map(({ feedTitle, feedDescription, id }) => {
     const liEl = document.createElement('li');
-    liEl.classList.add('list-group-item', 'border-0', 'border-end-0');
+    liEl.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
 
-    // const removeBtn = document.createElement('button');
-    // removeBtn.setAttribute('type', 'button');
-    // removeBtn.classList.add('btn', 'btn-outline-primary', 'btn-sm');
-    // removeBtn.textContent = i18next.t('items.removeBtn');
+    const removeBtn = document.createElement('button');
+    removeBtn.setAttribute('type', 'button');
+    removeBtn.setAttribute('data-id', id);
+    removeBtn.classList.add('btn', 'btn-warning', 'btn-sm', 'rm-btn');
+    removeBtn.textContent = i18next.t('items.removeBtn');
 
     const h3 = document.createElement('h3');
     h3.classList.add('h6', 'm-0');
@@ -121,7 +122,7 @@ const renderFeeds = (state, elements, i18next) => {
 
     liEl.append(h3);
     liEl.append(p);
-    // liEl.append(removeBtn);
+    liEl.append(removeBtn);
     return liEl;
   });
   feeds.forEach((li) => {
