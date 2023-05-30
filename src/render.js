@@ -106,6 +106,11 @@ const renderFeeds = (state, elements, i18next) => {
     const liEl = document.createElement('li');
     liEl.classList.add('list-group-item', 'border-0', 'border-end-0');
 
+    // const removeBtn = document.createElement('button');
+    // removeBtn.setAttribute('type', 'button');
+    // removeBtn.classList.add('btn', 'btn-outline-primary', 'btn-sm');
+    // removeBtn.textContent = i18next.t('items.removeBtn');
+
     const h3 = document.createElement('h3');
     h3.classList.add('h6', 'm-0');
     h3.textContent = feedTitle;
@@ -116,6 +121,7 @@ const renderFeeds = (state, elements, i18next) => {
 
     liEl.append(h3);
     liEl.append(p);
+    // liEl.append(removeBtn);
     return liEl;
   });
   feeds.forEach((li) => {

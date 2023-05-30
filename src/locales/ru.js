@@ -8,6 +8,7 @@ export default {
       feeds: 'Фиды',
       posts: 'Посты',
       btn: 'Просмотр',
+      removeBtn: 'Удалить',
     },
     errors: {
       alreadyExists: 'RSS уже существует',
