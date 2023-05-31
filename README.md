@@ -5,7 +5,7 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/ff7bd9cd5cefe7c2bf90/maintainability)](https://codeclimate.com/github/EweParo4ky/frontend-project-11/maintainability)
 [![CI Lint](https://github.com/EweParo4ky/frontend-project-11/actions/workflows/main.yml/badge.svg)](https://github.com/EweParo4ky/frontend-project-11/actions/workflows/main.yml)
 
-<code>[**Link to deploy**](https://frontend-project-11-two-gilt.vercel.app/ "Versel")</code>
+<code>[**Link to deploy**][https://frontend-project-11-two-gilt.vercel.app/ "Versel"]</code>
 
 ## Description:
 This is a simple service for aggregating RSS feeds.
@@ -29,6 +29,7 @@ It allows you to add unlimited feeds and keep them updated.
 [![Bootstrap][Bootstrap-badge]][Bootstrap-url]
 [![i18next][i18next-badge]][i18next-url]
 [![onChange][onChange-badge]][onChange-url]
+[![lodash][lodash-badge]][lodash-url]
 [![Webpack][Webpack-badge]][Webpack-url]
 [![yup][yup-badge]][yup-url]
 
@@ -43,6 +44,9 @@ It allows you to add unlimited feeds and keep them updated.
 
 [onChange-badge]: https://img.shields.io/badge/onChange-gray?style=flat&logoColor=white
 [onChange-url]: https://github.com/jquense/yup
+
+[lodash-badge]: https://img.shields.io/badge/-lodash-blue
+[lodash-url]: https://lodash.com
 
 [Webpack-badge]: https://img.shields.io/badge/Webpack-1A6BAC?style=flat&logo=webpack&logoColor=white
 [Webpack-url]: https://webpack.js.org
