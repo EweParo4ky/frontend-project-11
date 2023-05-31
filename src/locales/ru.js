@@ -4,6 +4,10 @@ export default {
       sending: 'RSS загружается',
       loaded: 'RSS успешно загружен',
     },
+    deleting: {
+      deleteFeed: 'Фид был удалён',
+      deleteAllFeeds: 'Все фиды удалены',
+    },
     items: {
       feeds: 'Фиды',
       posts: 'Посты',

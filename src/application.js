@@ -9,7 +9,7 @@ import resources from './locales/index.js';
 import parser from './parser.js';
 
 const validateUrl = (url, linksList) => {
-  const schema = yup.string().url().notOneOf(linksList);
+  const schema = yup.string().url().required().notOneOf(linksList);
   return schema.validate(url);
 };
 
@@ -81,7 +81,7 @@ const application = () => {
     darkTheme: true,
     posts: [],
     feeds: [],
-    errors: [],
+    error: '',
     stateUi: {
       viewedPosts: new Set(),
       postIdModal: null,
@@ -139,9 +139,10 @@ const application = () => {
             watchedState.formStatus = 'filling';
           })
           .catch((error) => {
+            watchedState.error = '';
             watchedState.requestStatus = 'failed';
             watchedState.formStatus = 'invalid';
-            watchedState.errors = handleError(error);
+            watchedState.error = handleError(error);
           });
       });
 
@@ -154,7 +155,8 @@ const application = () => {
       });
 
       elements.changeTheme.addEventListener('click', () => {
-        watchedState.darkTheme = !watchedState.darkTheme;
+        const themeStatus = watchedState.darkTheme;
+        watchedState.darkTheme = !themeStatus;
       });
       updatePosts(watchedState);
     });

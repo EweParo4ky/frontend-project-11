@@ -1,3 +1,6 @@
+/* eslint-disable no-use-before-define */
+import { deleteFeed, makeWrapper } from './utilities';
+
 const renderForm = (elements, value) => {
   switch (value) {
     case 'invalid':
@@ -59,6 +62,8 @@ const renderErrors = (elements, value, i18next) => {
   }
   const errorText = value.message || value;
   elements.feedback.textContent = i18next.t(`errors.${errorText}`);
+  elements.input.classList.add('is-invalid');
+  elements.input.focus();
 };
 
 const renderRequest = (elements, value, i18next) => {
@@ -80,24 +85,6 @@ const renderRequest = (elements, value, i18next) => {
   }
 };
 
-const makeWrapper = (elements, itemType, i18next) => {
-  elements[itemType].textContent = '';
-  const card = document.createElement('div');
-  card.classList.add('card', 'border-0', 'bg-light');
-
-  const cardBody = document.createElement('div');
-  cardBody.classList.add('card-body', 'bg-light');
-
-  const title = document.createElement('h2');
-  title.classList.add('card-title', 'h4');
-  title.textContent = i18next.t(`items.${itemType}`);
-
-  cardBody.append(title);
-  card.append(cardBody);
-
-  return card;
-};
-
 const renderFeeds = (state, elements, i18next) => {
   const list = document.createElement('ul');
   list.classList.add('list-group', 'border-0', 'rounded-0');
@@ -112,22 +99,7 @@ const renderFeeds = (state, elements, i18next) => {
     removeBtn.classList.add('btn', 'btn-warning', 'btn-sm', 'rm-btn');
     removeBtn.textContent = i18next.t('items.removeBtn');
 
-    removeBtn.addEventListener('click', () => {
-      const filteredFeeds = state.feeds.filter((feed) => feed.id !== id);
-      const filteredPosts = state.posts.filter((post) => post.feedId !== id);
-      state.feeds = [...filteredFeeds];
-      state.posts = [...filteredPosts];
-      console.log('state.feeds', state);
-      renderFeeds(state, elements, i18next);
-      // eslint-disable-next-line no-use-before-define
-      renderPosts(state, elements, i18next);
-      if (state.feeds.length === 0) {
-        elements.feeds.innerHTML = '';
-      }
-      if (state.posts.length === 0) {
-        elements.posts.innerHTML = '';
-      }
-    });
+    removeBtn.addEventListener('click', () => deleteFeed(state, elements, i18next, id, renderFeeds, renderPosts));
 
     const h3 = document.createElement('h3');
     h3.classList.add('h6', 'm-0');
@@ -170,7 +142,6 @@ const renderPosts = (state, elements, i18next) => {
     aEl.setAttribute('target', '_blank');
     aEl.setAttribute('rel', 'noopener noreferrer');
     aEl.textContent = post.title;
-
     liEl.append(aEl);
 
     const btnEl = document.createElement('button');
@@ -180,9 +151,7 @@ const renderPosts = (state, elements, i18next) => {
     btnEl.setAttribute('data-bs-target', '#modal');
     btnEl.classList.add('btn', 'btn-outline-primary', 'btn-sm');
     btnEl.textContent = i18next.t('items.btn');
-
     liEl.append(btnEl);
-
     return liEl;
   });
   posts.forEach((post) => {
@@ -252,7 +221,7 @@ const render = (state, elements, i18next) => (path, value) => {
     case 'darkTheme':
       renderTheme(state);
       break;
-    case 'errors':
+    case 'error':
       renderErrors(elements, value, i18next);
       break;
     default:
