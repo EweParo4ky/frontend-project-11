@@ -78,6 +78,7 @@ const application = () => {
   const initialState = {
     requestStatus: 'waiting',
     formStatus: 'filling',
+    darkTheme: true,
     posts: [],
     feeds: [],
     errors: [],
@@ -91,7 +92,7 @@ const application = () => {
     form: document.querySelector('.rss-form'),
     input: document.querySelector('#url-input'),
     submitButton: document.querySelector('button[type="submit"]'),
-    removeButton: '',
+    changeTheme: document.querySelector('.themtoogle'),
     feedback: document.querySelector('.feedback'),
     posts: document.querySelector('.posts'),
     feeds: document.querySelector('.feeds'),
@@ -136,15 +137,6 @@ const application = () => {
             watchedState.posts = [...postsWithId, ...initialState.posts];
             watchedState.requestStatus = 'loaded';
             watchedState.formStatus = 'filling';
-
-            elements.removeButtons = document.querySelectorAll('.rm-btn');
-            elements.removeButtons.forEach((btn) => {
-              btn.addEventListener('click', (event) => {
-                console.log('Boom!');
-                const currentFeedId = event.target.dataset.id;
-                console.log('currentFeedId', currentFeedId);
-              });
-            });
           })
           .catch((error) => {
             watchedState.requestStatus = 'failed';
@@ -159,6 +151,10 @@ const application = () => {
           watchedState.stateUi.viewedPosts.add(currentPostId);
           watchedState.stateUi.postIdModal = currentPostId;
         }
+      });
+
+      elements.changeTheme.addEventListener('click', () => {
+        watchedState.darkTheme = !watchedState.darkTheme;
       });
       updatePosts(watchedState);
     });

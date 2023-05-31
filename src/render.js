@@ -83,10 +83,10 @@ const renderRequest = (elements, value, i18next) => {
 const makeWrapper = (elements, itemType, i18next) => {
   elements[itemType].textContent = '';
   const card = document.createElement('div');
-  card.classList.add('card', 'border-0');
+  card.classList.add('card', 'border-0', 'bg-light');
 
   const cardBody = document.createElement('div');
-  cardBody.classList.add('card-body');
+  cardBody.classList.add('card-body', 'bg-light');
 
   const title = document.createElement('h2');
   title.classList.add('card-title', 'h4');
@@ -104,13 +104,30 @@ const renderFeeds = (state, elements, i18next) => {
 
   const feeds = state.feeds.map(({ feedTitle, feedDescription, id }) => {
     const liEl = document.createElement('li');
-    liEl.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
+    liEl.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0', 'bg-light');
 
     const removeBtn = document.createElement('button');
     removeBtn.setAttribute('type', 'button');
     removeBtn.setAttribute('data-id', id);
     removeBtn.classList.add('btn', 'btn-warning', 'btn-sm', 'rm-btn');
     removeBtn.textContent = i18next.t('items.removeBtn');
+
+    removeBtn.addEventListener('click', () => {
+      const filteredFeeds = state.feeds.filter((feed) => feed.id !== id);
+      const filteredPosts = state.posts.filter((post) => post.feedId !== id);
+      state.feeds = [...filteredFeeds];
+      state.posts = [...filteredPosts];
+      console.log('state.feeds', state);
+      renderFeeds(state, elements, i18next);
+      // eslint-disable-next-line no-use-before-define
+      renderPosts(state, elements, i18next);
+      if (state.feeds.length === 0) {
+        elements.feeds.innerHTML = '';
+      }
+      if (state.posts.length === 0) {
+        elements.posts.innerHTML = '';
+      }
+    });
 
     const h3 = document.createElement('h3');
     h3.classList.add('h6', 'm-0');
@@ -140,7 +157,7 @@ const renderPosts = (state, elements, i18next) => {
 
   const posts = state.posts.map((post) => {
     const liEl = document.createElement('li');
-    liEl.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
+    liEl.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0', 'bg-light');
 
     const aEl = document.createElement('a');
     if (state.stateUi.viewedPosts.has(post.id)) {
@@ -193,6 +210,25 @@ const renderModal = (state, elements, postId) => {
   elements.modal.link.setAttribute('href', link);
 };
 
+const renderTheme = (state) => {
+  const container = document.querySelector('.theme-bg');
+  const textContainer = document.querySelector('.theme-text');
+  const footer = document.querySelector('footer');
+  if (state.darkTheme) {
+    container.classList.remove('bg-dark');
+    container.classList.add('bg-light');
+    textContainer.classList.remove('text-white');
+    footer.classList.remove('bg-dark');
+    footer.classList.add('bg-light');
+  } else {
+    container.classList.remove('bg-light');
+    container.classList.add('bg-dark');
+    textContainer.classList.add('text-white');
+    footer.classList.remove('bg-light');
+    footer.classList.add('bg-dark');
+  }
+};
+
 const render = (state, elements, i18next) => (path, value) => {
   switch (path) {
     case 'formStatus':
@@ -212,6 +248,9 @@ const render = (state, elements, i18next) => (path, value) => {
       break;
     case 'stateUi.postIdModal':
       renderModal(state, elements, value);
+      break;
+    case 'darkTheme':
+      renderTheme(state);
       break;
     case 'errors':
       renderErrors(elements, value, i18next);

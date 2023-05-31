@@ -4,7 +4,8 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Hexlet Frontend Project</title>
+    <title>RSS Aggregator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
 </head>
 
 <body class="d-flex flex-column min-vh-100">
@@ -23,9 +24,9 @@
         </div>
     </div>
     <main class="flex-grow-1">
-        <section class="container-fluid bg-dark p-5">
+        <section class="container-fluid bg-dark p-5 theme-bg">
             <div class="row">
-                <div class="col-md-10 col-lg-8 mx-auto text-white">
+                <div class="col-md-10 col-lg-8 mx-auto theme-text text-white">
                     <h1 class="display-3 mb-0">RSS агрегатор</h1>
                     <p class="lead">Начните читать RSS сегодня! Это легко, это красиво.</p>
                     <form action="" class="rss-form text-body">
@@ -51,10 +52,13 @@
             </div>
         </section>
     </main>
-    <footer class="footer border-top py-3 mt-5 bg-light">
-        <div class="container-xl">
+    <footer class="footer border-top py-3 mt-5 bg-dark">
+        <div class="container-xl d-flex justify-content-between">
             <div class="text-center text-info">Created by <a href="https://github.com/EweParo4ky" class="text-info"
                     target="_blank"><b>EweParo4ky</b></a></div>
+            <a href="#" class="themtoogle"><span class="material-symbols-outlined">
+                    wb_sunny
+                </span></a>
         </div>
     </footer>
 </body>
