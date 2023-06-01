@@ -96,8 +96,11 @@ const renderFeeds = (state, elements, i18next) => {
     const removeBtn = document.createElement('button');
     removeBtn.setAttribute('type', 'button');
     removeBtn.setAttribute('data-id', id);
-    removeBtn.classList.add('btn', 'btn-warning', 'btn-sm', 'rm-btn');
-    removeBtn.textContent = i18next.t('items.removeBtn');
+    removeBtn.classList.add('btn', 'btn-sm', 'rm-btn');
+    const removeSpan = document.createElement('span');
+    removeSpan.classList.add('material-symbols-outlined');
+    removeSpan.textContent = 'delete';
+    removeBtn.append(removeSpan);
 
     removeBtn.addEventListener('click', () => deleteFeed(state, elements, i18next, id, renderFeeds, renderPosts));
 
