@@ -5,7 +5,13 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/ff7bd9cd5cefe7c2bf90/maintainability)](https://codeclimate.com/github/EweParo4ky/frontend-project-11/maintainability)
 [![CI Lint](https://github.com/EweParo4ky/frontend-project-11/actions/workflows/main.yml/badge.svg)](https://github.com/EweParo4ky/frontend-project-11/actions/workflows/main.yml)
 
-<code>[**Link to deploy**][https://frontend-project-11-two-gilt.vercel.app/ "Versel"]</code>
+## Link to deploy
+<!-- 
+<code>[**Link to deploy**][https://frontend-project-11-two-gilt.vercel.app/ "Versel"]</code> -->
+[![Versel][versel-badge]][versel-url]
+
+[versel-badge]: https://img.shields.io/badge/vercel-%23000000.svg?style=for-the-badge&logo=vercel&logoColor=white
+[versel-url]: https://frontend-project-11-two-gilt.vercel.app
 
 ## Description:
 This is a simple service for aggregating RSS feeds.
