@@ -1,4 +1,4 @@
-# Hexlet-frontend project: RSS Aggregator.
+# Hexlet-frontend project: ![Rss](https://img.shields.io/badge/rss-F88900?style=for-the-badge&logo=rss&logoColor=white) Aggregator.
 
 ### Hexlet tests and linter status:
 [![Actions Status](https://github.com/EweParo4ky/frontend-project-11/workflows/hexlet-check/badge.svg)](https://github.com/EweParo4ky/frontend-project-11/actions)
