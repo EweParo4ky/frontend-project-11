@@ -1,4 +1,4 @@
-# Hexlet-frontend project: ![Rss](https://img.shields.io/badge/rss-F88900?style=for-the-badge&logo=rss&logoColor=white) Aggregator.
+# Hexlet-frontend project: [![Rss][Rss-badge]][Rss-url] Aggregator.
 
 ### Hexlet tests and linter status:
 [![Actions Status](https://github.com/EweParo4ky/frontend-project-11/workflows/hexlet-check/badge.svg)](https://github.com/EweParo4ky/frontend-project-11/actions)
@@ -53,6 +53,9 @@ It allows you to add unlimited feeds and keep them updated.
 
 [lodash-badge]: https://img.shields.io/badge/-lodash-blue
 [lodash-url]: https://lodash.com
+
+[Rss-badge]: https://img.shields.io/badge/rss-F88900?style=for-the-badge&logo=rss&logoColor=white
+[Rss-url]: https://en.wikipedia.org/wiki/RSS
 
 [Webpack-badge]: https://img.shields.io/badge/Webpack-1A6BAC?style=flat&logo=webpack&logoColor=white
 [Webpack-url]: https://webpack.js.org
